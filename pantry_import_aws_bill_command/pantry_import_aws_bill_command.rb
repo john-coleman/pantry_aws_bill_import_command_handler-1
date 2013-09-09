@@ -1,7 +1,8 @@
 module Wonga
   module Daemon
     class PantryImportAwsBillCommand
-      def initialize(config)
+      def initialize(api_client, config)
+        @api_client = api_client
         @config = config
       end
 
