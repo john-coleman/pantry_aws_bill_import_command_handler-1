@@ -4,19 +4,12 @@ require_relative '../../pantry_import_aws_bill_command/bill_parser'
 require 'logger'
 
 describe Wonga::Daemon::PantryImportAwsBillCommand do
-  def send_message(msg, queue_name = 'pantry_test_import_aws_bill_command')
-    sqs = AWS::SQS.new
-    url = sqs.queues.url_for(queue_name)
-    sqs.queues[url].send_message(msg.to_json)
-  end
-  
-  let(:publisher) { instance_double('Wonga::Daemon').as_null_object }
+  let(:publisher) { instance_double('Wonga::Publisher').as_null_object }
   let(:api_client) { instance_double('Wonga::Daemon::PantryApiClient').as_null_object }
   let(:logger) { instance_double('Logger').as_null_object }
   let(:bucket) { instance_double('AWS::S3::Bucket').as_null_object }
 
   subject do 
-    Wonga::Daemon.stub(:config).and_return('pantry_test_import_aws_bill_command')
     described_class.new(publisher, bucket, api_client, logger).as_null_object
   end
 
@@ -33,9 +26,7 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
       bucket.stub(:objects).and_return([object])
     end
     
-    it "sends a message to the queue" do
-      
-    end
+    include_examples "send message"
 
     it "gets data from bill_parser" do
       subject.handle_message(message)
