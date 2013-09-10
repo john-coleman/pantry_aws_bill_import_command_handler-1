@@ -4,17 +4,20 @@ require_relative '../../pantry_import_aws_bill_command/bill_parser'
 require 'logger'
 
 describe Wonga::Daemon::PantryImportAwsBillCommand do
+  let(:publisher) { instance_double('Wonga::Publisher').as_null_object }
   let(:api_client) { instance_double('Wonga::Daemon::PantryApiClient').as_null_object }
   let(:logger) { instance_double('Logger').as_null_object }
   let(:bucket) { instance_double('AWS::S3::Bucket').as_null_object }
 
-  subject { described_class.new(bucket, api_client, logger).as_null_object }
+  subject do 
+    described_class.new(publisher, bucket, api_client, logger).as_null_object
+  end
 
   it_behaves_like 'handler'
 
   describe "#handle_message" do
     let(:bill_parser) { instance_double('Wonga::BillParser').as_null_object }
-    let(:message) { {} }
+    let(:message) { {"process" => true} }
     let(:text) { 'some_text' }
     let(:object) { instance_double('AWS::S3::S3Object', read: text) }
 
@@ -22,6 +25,8 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
       Wonga::BillParser.stub(:new).and_return(bill_parser)
       bucket.stub(:objects).and_return([object])
     end
+    
+    include_examples "send message"
 
     it "gets data from bill_parser" do
       subject.handle_message(message)
@@ -35,4 +40,3 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
     end
   end
 end
-
