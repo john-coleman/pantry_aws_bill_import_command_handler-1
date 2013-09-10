@@ -4,6 +4,7 @@ gem 'daemons'
 gem 'aws-sdk'
 gem 'pantry_daemon_common', git: 'git@github.com:wongatech/pantry_daemon_common.git', :tag => 'v0.1.5'
 gem 'rest-client'
+gem 'em-winrm', git: 'https://github.com/besol/em-winrm.git'
 
 group :development do
   gem 'guard-rspec'
