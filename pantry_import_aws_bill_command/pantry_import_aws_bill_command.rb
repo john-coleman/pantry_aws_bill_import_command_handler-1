@@ -16,7 +16,7 @@ module Wonga
           @logger.info { "Last file is #{@bucket.objects.to_a.last.key}" }
           result = parser.parse(@bucket.objects.to_a.last.read)
           @logger.debug "Parsed #{result}"
-          @publisher.publish({}) # continue the loop
+          @publisher.publish({ "process" => true }) # continue the loop
           result
       end
     end
