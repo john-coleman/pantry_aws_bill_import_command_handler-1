@@ -6,7 +6,7 @@ module Wonga
       result = {}
       CSV.parse(text, headers: true) do |row|
         if row["RecordType"] == "InvoiceTotal"
-          result[:total] = row["TotalCost"]
+          result[:total_cost] = row["TotalCost"]
           result[:bill_date] = Time.parse(row["BillingPeriodEndDate"])
         end
       end
