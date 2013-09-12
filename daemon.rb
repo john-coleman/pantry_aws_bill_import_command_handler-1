@@ -8,5 +8,5 @@ Wonga::Daemon.load_config(File.expand_path(config_name))
 Wonga::Daemon.run(Wonga::Daemon::PantryImportAwsBillCommand.new(
   Wonga::Daemon.publisher,
   AWS::S3.new.buckets[Wonga::Daemon.config['aws']['billing_bucket']],
-  Wonga::Daemon.pantry_api_client, Wonga::Daemon.logger)
+  Wonga::Daemon.logger)
 )
