@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:wongatech/pantry_daemon_common.git
-  revision: b812dcb4a2fe20aea7f706745c6d1e6ad15f92cd
-  tag: v0.1.6
+  revision: 0feea3c0a4fc488b7eaacd5fe9de364fbdd52e34
+  tag: v0.1.7
   specs:
-    pantry_daemon_common (0.1.6)
+    pantry_daemon_common (0.1.7)
       aws-sdk
       daemons
       em-winrm
@@ -78,7 +78,7 @@ GEM
     mime-types (1.25)
     mixlib-log (1.6.0)
     multi_json (1.8.0)
-    net-ssh (2.6.8)
+    net-ssh (2.7.0)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     net-ssh-multi (1.2.0)
