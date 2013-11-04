@@ -22,6 +22,7 @@
       <% end %>
     <% end %>
     monitor: <%= @config["daemon"]["monitor"] %>
+    job_interval: <%= @config["daemon"]["job_interval"] %>
   pantry:
     api_key: <%= @config["pantry"]["pantry_api_key"] %>
     request_timeout: <%= @config["pantry"]["pantry_request_timeout"] %>
