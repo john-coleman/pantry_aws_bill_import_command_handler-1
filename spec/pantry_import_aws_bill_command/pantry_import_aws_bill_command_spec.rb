@@ -10,9 +10,7 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
 
   subject { described_class.new(publisher, bucket, logger, '1h').as_null_object }
 
-  it_behaves_like 'handler'
-
-  describe "#handle_message" do
+  describe "#parse" do
     let(:bill_parser) { instance_double('Wonga::BillParser', parse: message) }
     let(:message) { { total: 10 } }
     let(:text) { 'some_text' }
@@ -25,18 +23,18 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
 
     it "publishes message with result" do
       subject.parse
-      expect(publisher).to have_received(:publish).with(message)
+      expect(publisher).to have_received(:publish).with(message).twice
     end
 
     it "gets data from bill_parser" do
       subject.parse
-      expect(Wonga::BillParser).to have_received(:new)
-      expect(bill_parser).to have_received(:parse).with(text)
+      expect(Wonga::BillParser).to have_received(:new).twice
+      expect(bill_parser).to have_received(:parse).with(text).twice
     end
 
     it "loads last file from s3 bucket" do
       subject.parse
-      expect(object).to have_received(:read)
+      expect(object).to have_received(:read).twice
     end
   end
 end
