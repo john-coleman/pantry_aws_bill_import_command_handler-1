@@ -23,7 +23,7 @@ module Wonga
       end
       
       grouped_costs = result[:ec2].group_by {|grouped_hash| grouped_hash[:instance_id]}
-      result[:ec2_total] = grouped_costs.map {|key, value| {estimated: reduce_estimated(value), instance_id: key, cost: BigDecimal.new(reduce_cost(value), 2)}}
+      result[:ec2_total] = grouped_costs.map {|key, value| {estimated: reduce_estimated(value), ec2_instance_id: key, cost: BigDecimal.new(reduce_cost(value), 2)}}
       result
     end
     
