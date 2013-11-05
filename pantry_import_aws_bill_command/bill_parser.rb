@@ -15,15 +15,15 @@ module Wonga
 
         if row["user:pantry_request_id"]
           result[:ec2] << {
-            ec2_instance_id: row["user:pantry_request_id"],
+            instance_id: row["user:pantry_request_id"],
             cost: BigDecimal.new(row["TotalCost"]),
             estimated: (row["InvoiceID"].strip == "Estimated")
           }
         end
       end
       
-      grouped_costs = result[:ec2].group_by {|grouped_hash| grouped_hash[:ec2_instance_id]}
-      result[:ec2_total] = grouped_costs.map {|key, value| {estimated: reduce_estimated(value), ec2_instance_id: key, cost: BigDecimal.new(reduce_cost(value), 2)}}
+      grouped_costs = result[:ec2].group_by {|grouped_hash| grouped_hash[:instance_id]}
+      result[:ec2_total] = grouped_costs.map {|key, value| {estimated: reduce_estimated(value), instance_id: key, cost: BigDecimal.new(reduce_cost(value), 2)}}
       result
     end
     
