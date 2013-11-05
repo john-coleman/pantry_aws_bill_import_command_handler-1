@@ -18,23 +18,32 @@ describe Wonga::Daemon::PantryImportAwsBillCommand do
 
     before(:each) do
       Wonga::BillParser.stub(:new).and_return(bill_parser)
-      bucket.stub(:objects).and_return([object])
+      object.stub(:key).and_return("001100110011-aws-billing-csv-2013-08.csv")
     end
 
     it "publishes message with result" do
+      bucket.stub(:objects).and_return([object])
       subject.parse
       expect(publisher).to have_received(:publish).with(message).twice
     end
 
     it "gets data from bill_parser" do
+      bucket.stub(:objects).and_return([object])
       subject.parse
       expect(Wonga::BillParser).to have_received(:new).twice
       expect(bill_parser).to have_received(:parse).with(text).twice
     end
 
     it "loads last file from s3 bucket" do
+      bucket.stub(:objects).and_return([object])
       subject.parse
       expect(object).to have_received(:read).twice
+    end
+    
+    it "does not fail if there are no files" do
+      bucket.stub(:objects).and_return([])
+      subject.parse
+      expect(object).to_not have_received(:read)
     end
   end
 end
