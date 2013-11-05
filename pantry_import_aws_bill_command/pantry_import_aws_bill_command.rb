@@ -19,13 +19,13 @@ module Wonga
       def parse
         filtered = []
         @bucket.objects.each do |file|
-          filtered << file.key if file.key =~ /aws-billing-csv/
+          filtered << file if file.key =~ /aws-billing-csv/
         end
 
         if filtered.last
           parser = Wonga::BillParser.new
-          @logger.info { "Last file is #{@bucket.objects.to_a.last.key}" }
-          result = parser.parse(@bucket.objects.to_a.last.read)
+          @logger.info { "Last file is #{filtered.last.key}" }
+          result = parser.parse(filtered.last.read)
           @logger.debug "Parsed #{result}"
           @publisher.publish(result)
         end
