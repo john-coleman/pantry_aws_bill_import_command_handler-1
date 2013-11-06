@@ -15,29 +15,25 @@ development:
     api_key: api_key
     request_timeout: 10
     url: http://localhost:3000
-  sqs:
-    queue_name: pantry_test_import_aws_bill_command
   sns:
     topic_arn: arn:aws:sns:eu-west-1:001100110011:pantry_test_import_aws_bill_event
     error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
 test:
-aws:
-  access_key_id: some_aws_iam_access_key_id
-  secret_access_key: some_aws_iam_secret_access_key
-  region: eu-west-1
-  billing_bucket: billing_bucket_name
-daemon:
-  app_name: pantry_import_aws_bill_command
-  backtrace: false
-  dir_mode: normal
-  dir: /tmp/
-  monitor: false
-pantry:
-  api_key: api_key
-  request_timeout: 10
-  url: http://localhost:3000
-sqs:
-  queue_name: pantry_test_import_aws_bill_command
-sns:
-  topic_arn: arn:aws:sns:eu-west-1:001100110011:pantry_test_import_aws_bill_event
-  error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+  aws:
+    access_key_id: some_aws_iam_access_key_id
+    secret_access_key: some_aws_iam_secret_access_key
+    region: eu-west-1
+    billing_bucket: billing_bucket_name
+  daemon:
+    app_name: pantry_import_aws_bill_command
+    backtrace: false
+    dir_mode: normal
+    dir: /tmp/
+    monitor: false
+  pantry:
+    api_key: api_key
+    request_timeout: 10
+    url: http://localhost:3000
+  sns:
+    topic_arn: arn:aws:sns:eu-west-1:001100110011:pantry_test_import_aws_bill_event
+    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
