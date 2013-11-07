@@ -12,7 +12,8 @@ Daemons.run_proc(Wonga::Daemon.config['daemon']['app_name'], Wonga::Daemon.confi
                                                           Wonga::Daemon.logger)
   command.parse(true)
 
-  Rufus::Scheduler.new.in(Wonga::Daemon.config['daemon']['job_interval']) {
+  loop do
+    sleep Wonga::Daemon.config['daemon']['job_interval'].to_i
     command.parse
-  }
+  end
 }
