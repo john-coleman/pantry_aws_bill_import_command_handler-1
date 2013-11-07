@@ -10,7 +10,7 @@ development:
     dir_mode: normal
     dir: /tmp/
     monitor: false
-    job_interval: 1h
+    job_interval: 3600
   pantry:
     api_key: api_key
     request_timeout: 10
@@ -30,6 +30,7 @@ test:
     dir_mode: normal
     dir: /tmp/
     monitor: false
+    job_interval: 3600
   pantry:
     api_key: api_key
     request_timeout: 10
