@@ -1,0 +1,22 @@
+AllCops:
+  Exclude:
+    - 'Guardfile'
+    - 'Gemfile'
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/CollectionMethods:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/NumericLiterals:
+  MinDigits: 9
+Style/MultilineOperationIndentation:
+  Enabled: false
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 160
+Metrics/AbcSize:
+  Max: 27

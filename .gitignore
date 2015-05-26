@@ -24,3 +24,4 @@ daemon.yml
 *.pem
 .DS_Store
 /.*cache
+shared

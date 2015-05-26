@@ -1,68 +1,83 @@
 require 'spec_helper'
+require 'wonga/daemon/publisher'
 require_relative '../../pantry_import_aws_bill_command/pantry_import_aws_bill_command'
-require_relative '../../pantry_import_aws_bill_command/bill_parser'
 require 'logger'
 
-describe Wonga::Daemon::PantryImportAwsBillCommand do
-  let(:publisher) { instance_double('Wonga::Publisher').as_null_object }
-  let(:logger) { instance_double('Logger').as_null_object }
-  let(:bucket) { instance_double('AWS::S3::Bucket').as_null_object }
+RSpec.describe Wonga::Daemon::PantryImportAwsBillCommand do
+  let(:publisher) { instance_double(Wonga::Daemon::Publisher).as_null_object }
+  let(:logger) { instance_double(Logger).as_null_object }
+  let(:bucket) { instance_double(Aws::S3::Bucket, objects: objects).as_null_object }
 
-  subject { described_class.new(publisher, bucket, logger).as_null_object }
+  subject { described_class.new(publisher, bucket, logger) }
 
-  describe "#parse" do
-    let(:bill_parser) { instance_double('Wonga::BillParser', parse: message) }
+  describe '#parse' do
+    let(:bill_parser) { instance_double(Wonga::BillParser, parse: message) }
     let(:message) { { total: 10 } }
-    let(:text) { 'some_text' }
-    let(:object) { instance_double('AWS::S3::S3Object', read: text, key: "001100110011-aws-cost-allocation-2013-08.csv") }
-    let(:bad_object) { instance_double('AWS::S3::S3Object', key: "bad_object") }
-
-    before(:each) do
-      Wonga::BillParser.stub(:new).and_return(bill_parser)
+    let(:text) do
+      io = StringIO.new
+      allow(io).to receive(:readline)
+      io
     end
 
-    it "publishes message with result" do
-      bucket.stub(:objects).and_return([object])
+    let(:object) { instance_double(Aws::S3::ObjectSummary, get: double(body: text), key: '001100110011-aws-cost-allocation-2013-08.csv') }
+    let(:bad_object) { instance_double(Aws::S3::ObjectSummary, key: 'bad_object') }
+    let(:objects) { [object] }
+
+    before(:each) do
+      allow(Wonga::BillParser).to receive(:new).and_return(bill_parser)
+      allow(subject).to receive(:sleep)
+    end
+
+    it 'publishes message with result' do
+      allow(bucket).to receive(:objects).and_return([object])
       subject.parse
       expect(publisher).to have_received(:publish).with(message)
     end
 
-    it "gets data from bill_parser" do
-      bucket.stub(:objects).and_return([object])
+    it 'gets data from bill_parser' do
+      allow(bucket).to receive(:objects).and_return([object])
       subject.parse
       expect(Wonga::BillParser).to have_received(:new)
       expect(bill_parser).to have_received(:parse).with(text)
+      expect(text).to have_received(:readline)
     end
 
-    describe "in the beginning of month" do
-      it "loads 2 last files with corresponding name from s3 bucket by default" do
-        Date.stub_chain(:today, :day).and_return(2)
-        bucket.stub(:objects).and_return([object, bad_object, object])
-        subject.parse
-        expect(bill_parser).to have_received(:parse).with(text).twice
+    context 'when there are several good objects' do
+      let(:objects) { [object, object, bad_object, object] }
+
+      describe 'in the beginning of month' do
+        before(:each) { allow(Date).to receive_message_chain(:today, :day).and_return(2) }
+
+        it 'loads 2 last files with corresponding name from s3 bucket by default' do
+          allow(Date).to receive_message_chain(:today, :day).and_return(2)
+          subject.parse
+          expect(bill_parser).to have_received(:parse).with(text).twice
+        end
+      end
+
+      describe 'in the end of month' do
+        before(:each) { allow(Date).to receive_message_chain(:today, :day).and_return(25) }
+
+        it 'loads last file with corresponding name from s3 bucket by default' do
+          subject.parse
+          expect(bill_parser).to have_received(:parse).with(text).once
+        end
+      end
+
+      it 'parses all filtered files if requested' do
+        subject.parse(true)
+        expect(bill_parser).to have_received(:parse).with(text).exactly(3).times
       end
     end
 
-    describe "in the end of month" do
-      it "loads last file with corresponding name from s3 bucket by default" do
-        Date.stub_chain(:today, :day).and_return(25)
-        bucket.stub(:objects).and_return([object, bad_object, object])
+    context 'when there are no files with corresponding name' do
+      let(:objects) { [bad_object] }
+
+      it 'does not fail if there are no files with corresponding name' do
         subject.parse
-        expect(bill_parser).to have_received(:parse).with(text).once
+        expect(bill_parser).to_not have_received(:parse)
+        expect(publisher).to_not have_received(:publish).with(message)
       end
-    end
-
-    it "does not fail if there are no files with corresponding name" do
-      bucket.stub(:objects).and_return([bad_object])
-      subject.parse
-      expect(bill_parser).to_not have_received(:parse)
-      expect(publisher).to_not have_received(:publish).with(message)
-    end
-
-    it "parses all filtered files if requested" do
-      bucket.stub(:objects).and_return([object, object, object])
-      subject.parse(true)
-      expect(bill_parser).to have_received(:parse).with(text).exactly(3).times
     end
   end
 end
