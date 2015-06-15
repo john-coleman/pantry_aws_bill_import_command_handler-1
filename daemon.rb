@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'rubygems'
+require 'daemons'
 require 'wonga/daemon'
 require_relative 'pantry_import_aws_bill_command/pantry_import_aws_bill_command'
 
