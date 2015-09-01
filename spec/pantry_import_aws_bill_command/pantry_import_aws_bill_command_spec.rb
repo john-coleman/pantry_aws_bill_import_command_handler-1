@@ -19,7 +19,7 @@ RSpec.describe Wonga::Daemon::PantryImportAwsBillCommand do
       io
     end
 
-    let(:object) { instance_double(Aws::S3::ObjectSummary, get: double(body: text), key: '001100110011-aws-cost-allocation-2013-08.csv') }
+    let(:object) { instance_double(Aws::S3::ObjectSummary, get: double(body: text), key: '001100110011-aws-cost-allocation-2013-04.csv') }
     let(:bad_object) { instance_double(Aws::S3::ObjectSummary, key: 'bad_object') }
     let(:objects) { [object] }
 

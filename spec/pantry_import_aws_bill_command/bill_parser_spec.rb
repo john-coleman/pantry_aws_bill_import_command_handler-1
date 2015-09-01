@@ -7,7 +7,7 @@ RSpec.describe Wonga::BillParser do
 
     it 'parses the total cost and billing date' do
       expect(result[:total_cost]).to eq('10801.86')
-      expect(result[:bill_date]).to eq(Time.new(2013, 9, 30, 23, 59, 59))
+      expect(result[:bill_date]).to eq(Time.new(2123, 4, 30, 23, 59, 59))
     end
 
     it 'parses a non estimated instance' do

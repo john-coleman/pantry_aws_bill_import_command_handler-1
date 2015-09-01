@@ -16,8 +16,8 @@ development:
     request_timeout: 10
     url: http://localhost:3000
   sns:
-    topic_arn: arn:aws:sns:eu-west-1:001100110011:pantry_test_import_aws_bill_event
-    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+    topic_arn: daemon_specific_topic_arn
+    error_arn: daemon_specific_error_arn
 test:
   aws:
     access_key_id: some_aws_iam_access_key_id
@@ -34,7 +34,7 @@ test:
   pantry:
     api_key: api_key
     request_timeout: 10
-    url: http://localhost:3000
+    url: http://pantry.example.com:3000
   sns:
-    topic_arn: arn:aws:sns:eu-west-1:001100110011:pantry_test_import_aws_bill_event
-    error_arn: arn:aws:sns:eu-west-1:001100110011:pantry_error_logs
+    topic_arn: daemon_specific_topic_arn
+    error_arn: daemon_specific_error_arn
